@@ -1,0 +1,58 @@
+<html>
+<meta charset="utf-8">
+<title>Fusion Traning</title>
+<link rel="stylesheet" type="text/css" href="./styles.css">
+
+<body>
+  <div class="container">
+    <div class="circle" id="c1">
+      <div class="inner-circle"></div>
+    </div>
+    <div class="circle" id="c2" style="--line-color: var(--line-color2)">
+      <div class="inner-circle"></div>
+    </div>
+  </div>
+  <div class="slider-wrapper">
+    <input type="range" min="0" max="100" value="0" step="1" class="slider" id="slider" />
+  </div>
+  <div class="buttons">
+    <button data-zoom="2">x2</button>
+    <button data-zoom="1">x1</button>
+    <button data-zoom="0.5">x0.5</button>
+  </div>
+  <script type="module">
+    const slider = document.querySelector('#slider');
+    localStorage.getItem('slidervalue') && (slider.value = +localStorage.getItem('slidervalue'));
+    /** @type {HTMLDivElement} */
+    const c1 = document.querySelector('#c1');
+    /** @type {HTMLDivElement} */
+    const c2 = document.querySelector('#c2');
+
+    const move = (value) => {
+      c1.style.transform = `translateX(${value}%)`;
+      c2.style.transform = `translateX(-${value}%)`;
+    };
+
+    move(slider.value ?? 0);
+
+    slider.addEventListener('change', evt => {
+      localStorage.setItem('slidervalue', evt.target.value);
+    });
+    slider.addEventListener('input', (evt) => {
+      move(evt.target.value);
+    });
+
+    /** @type {HTMLDivElement} */
+    const container = document.querySelector('.container');
+    /** @type {NodeListOf<HTMLButtonElement>} */
+    const buttons = document.querySelectorAll('button[data-zoom]');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (/** @type {{target: HTMLButtonElement}} */evt) => {
+        const zoom = +evt.target.dataset.zoom;
+        container.style.cssText = `--circle-size: ${7 * zoom}cm;--inner-circle-size: ${4 * zoom}cm;--line-width: ${0.4 * zoom}cm;`;
+      });
+    })
+  </script>
+</body>
+
+</html>
