@@ -1,24 +1,32 @@
 <html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 <title>Fusion Traning</title>
-<link rel="stylesheet" type="text/css" href="./styles.css">
+<link rel="stylesheet" type="text/css" href="./styles.css?v=20241215144112">
 
 <body>
-  <div class="container">
+  <div class="container single">
     <div class="circle" id="c1">
-      <div class="inner-circle"></div>
+      <div class="inner-circle left"></div>
+      <div class="arrow"></div>
     </div>
     <div class="circle" id="c2" style="--line-color: var(--line-color2)">
-      <div class="inner-circle"></div>
+      <div class="inner-circle right"></div>
     </div>
   </div>
   <div class="slider-wrapper">
+    <button id="range-decrease">-</button>
     <input type="range" min="0" max="100" value="0" step="1" class="slider" id="slider" />
+    <button id="range-increase">+</button>
   </div>
   <div class="buttons">
     <button data-zoom="2">x2</button>
     <button data-zoom="1">x1</button>
     <button data-zoom="0.5">x0.5</button>
+  </div>
+  <div class="modes">
+    <label><input type="radio" name="mode" id="single" checked /> Single</label>
+    <label><input type="radio" name="mode" id="multiple" /> Multiple</label>
   </div>
   <script type="module">
     const slider = document.querySelector('#slider');
@@ -29,8 +37,8 @@
     const c2 = document.querySelector('#c2');
 
     const move = (value) => {
-      c1.style.transform = `translateX(${value}%)`;
-      c2.style.transform = `translateX(-${value}%)`;
+      c1.style.transform = `translateX(${value / 2}%)`;
+      c2.style.transform = `translateX(-${value / 2}%)`;
     };
 
     move(slider.value ?? 0);
@@ -52,6 +60,24 @@
         container.style.cssText = `--circle-size: ${7 * zoom}cm;--inner-circle-size: ${4 * zoom}cm;--line-width: ${0.4 * zoom}cm;`;
       });
     })
+
+    document.querySelector('#range-decrease').addEventListener('click', () => {
+      slider.value = Math.max(0, +slider.value - 1);
+      move(slider.value);
+    });
+    document.querySelector('#range-increase').addEventListener('click', () => {
+      slider.value = Math.min(100, +slider.value + 1);
+      move(slider.value);
+    });
+    document.querySelectorAll('.modes input').forEach(input => {
+      input.addEventListener('change', (evt) => {
+        if (evt.target.id === 'single') {
+          container.classList.add('single');
+        } else {
+          container.classList.remove('single');
+        }
+      });
+    });
   </script>
 </body>
 
